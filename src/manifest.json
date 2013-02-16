@@ -1,0 +1,23 @@
+{
+	"name":"TopKe",
+	"version":"1.0",
+	"manifest_version":2,
+	"description":"TopKe",
+	"content_security_policy":"script-src 'self' https://github.com; object-src 'self';",
+	"permissions":[
+		"http://detail.tmall.com/item.htm*",
+		"http://item.taobao.com/item.htm*",
+		"notifications",
+		"webRequest",
+		"webRequestBlocking"
+	],
+	"content_scripts": [ {
+		"all_frames": true,
+		"js": [ "topke.user.js" ],
+		"matches": [ 
+			"http://detail.tmall.com/item.htm*",
+			"http://item.taobao.com/item.htm*"
+		],
+		"run_at": "document_idle"
+	} ]
+}
