@@ -74,15 +74,18 @@
     	api:{
     		'weibo': 'http://service.weibo.com/share/share.php?url={url}&title={title}&pic={pic}&language=zh_cn',
 	        'qweibo': 'http://share.v.t.qq.com/index.php?c=share&a=index&appkey=801314304&url={url}&title={title}&pic={pic}',
-	        'qzone': 'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url={url}&desc={title}&pics={pic}&otype=share',
-	        'pengyou': 'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url={url}&title={title}&pics={pic}&to=pengyou'
+	        'qzone': 'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url={url}&title={title}&summary={title}&desc={title}&pics={pic}&otype=share',
+	        'pengyou': 'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url={url}&title={title}&summary={title}&pics={pic}&to=pengyou'
     	},
+        replaceAll:function(txt, reChr, newChr){
+            return txt.replace(new RegExp(reChr, 'g'), newChr);
+        },
     	bind:function(s, url, title, pic){
             var btn = $('topke-share-' + s);
             var href = T.share.getShareUrl(s);
-            href = href.replace('{url}', encodeURIComponent(url))
-            .replace('{title}', encodeURIComponent(title))
-            .replace('{pic}', encodeURIComponent(pic));
+            href = this.replaceAll(href, '{url}', encodeURIComponent(url));
+            href = this.replaceAll(href, '{title}', encodeURIComponent(title));
+            href = this.replaceAll(href, '{pic}', encodeURIComponent(pic));
             btn.onclick = function(){
             	window.open(href, '_blank');
             };
@@ -108,7 +111,7 @@
     		var id = T.request.get('id');
     		var doReal = this.checkTrack();
     		if(id && doReal){
-    			this.getTaobaokeItem();
+    			this.getTaobaokeItem(id);
     		}
     	},
     	checkTrack:function(){
@@ -116,11 +119,36 @@
     		var has_id = 'mm_11988958_0_0';
     		return (!ali_id) ? true : ali_id.indexOf(has_id)<0;
     	},
-    	getTaobaokeItem:function(){
-    		this.ajaxCallback({"taobaoke_items_detail_get_response":{"taobaoke_item_details":{"taobaoke_item_detail":[{"click_url":"http:\/\/s.click.taobao.com\/t?e=zGU34CA7K%2BPkqB07S4%2FK0CFcRfH0G7DbPkiN9MBfGmqKU811CBXVbSghMJz7gr1wYttoUY1ZTWJdhImHMOSQflkwlWf3CNGUB8IUkQsXO2KqkzStSvDr%2FFYKS5Q9o9tEMuEbeIWJXNaBpEKsnQxx5qV3YI%2FX8sylFInkCi7pDYEmeFIeIW5hd5UrF88QLg%3D%3D&spm=2014.21338611.1.0","item":{"pic_url":"http:\/\/img04.taobaocdn.com\/bao\/uploaded\/i4\/17957032183600031\/T1IzVbXrhdXXXXXXXX_!!0-item_pic.jpg","title":"韩都衣舍韩版2013春装新款保暖显瘦小脚裤抓绒休闲裤女NJ1003翝"}}]},"total_results":1}});
+        getHead:function(){
+            var doc = document;
+            return doc.head || doc.getElementsByTagName('head')[0];
+        },
+    	getTaobaokeItem:function(id){
+            var that = this;
+            this.ajaxScript(id, function(d){
+                that.ajaxCallback(d);
+            });
+    		//this.ajaxCallback({"taobaoke_items_detail_get_response":{"taobaoke_item_details":{"taobaoke_item_detail":[{"click_url":"http:\/\/s.click.taobao.com\/t?e=zGU34CA7K%2BPkqB07S4%2FK0CFcRfH0G7DbPkiN9MBfGmqKU811CBXVbSghMJz7gr1wYttoUY1ZTWJdhImHMOSQflkwlWf3CNGUB8IUkQsXO2KqkzStSvDr%2FFYKS5Q9o9tEMuEbeIWJXNaBpEKsnQxx5qV3YI%2FX8sylFInkCi7pDYEmeFIeIW5hd5UrF88QLg%3D%3D&spm=2014.21338611.1.0","item":{"pic_url":"http:\/\/img04.taobaocdn.com\/bao\/uploaded\/i4\/17957032183600031\/T1IzVbXrhdXXXXXXXX_!!0-item_pic.jpg","title":"韩都衣舍韩版2013春装新款保暖显瘦小脚裤抓绒休闲裤女NJ1003翝"}}]},"total_results":1}});
     	},
+        jsonpScript:function(id, callback){
+            var head = this.getHead();
+            var script = document.createElement('script');
+            var src = 'http://liuxf2010.xvip222.asccf.com/TopKe/tbkitem.asp?id='+id+'&jsonp=taobaoke_items_detail_get_response';
+            T.jsonpCallbackParams('taobaoke_items_detail_get_response', callback);
+            script.src = src;
+            head.insertBefore(script, head.firstChild);
+        },
+        ajaxScript:function(id, callback){
+            var url = 'http://liuxf2010.xvip222.asccf.com/TopKe/tbkitem.asp?id='+id;
+            var xhr = new XMLHttpRequest;
+            xhr.open('GET', url, true);
+            xhr.onload = function(){
+                callback(JSON.parse(xhr.responseText));
+            };
+            xhr.send();
+        },
     	ajaxCallback:function(d){
-    		var path = 'http://itopke.duapp.com/go.php';
+    		var path = 'http://www.lady172.com/go.html';
     		var data = d.taobaoke_items_detail_get_response;
     		if(data.total_results){
     			data = data.taobaoke_item_details.taobaoke_item_detail[0];
