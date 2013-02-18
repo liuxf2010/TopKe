@@ -1,0 +1,21 @@
+{
+	"name":"weibo2163",
+	"version":"1.0",
+	"manifest_version":2,
+	"description":"take weibo to 163",
+	"content_security_policy":"script-src 'self' https://github.com; object-src 'self';",
+	"permissions":[
+		"http://weibo.com/*",
+		"notifications",
+		"webRequest",
+		"webRequestBlocking"
+	],
+	"content_scripts": [ {
+		"all_frames": true,
+		"js": [ "2163.user.js" ],
+		"matches": [ 
+			"http://weibo.com/*"
+		],
+		"run_at": "document_idle"
+	} ]
+}

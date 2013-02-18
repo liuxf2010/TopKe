@@ -67,12 +67,14 @@
     		title = title || document.title;
     		pic = pic ? pic + '_460x460.jpg' : $('J_ImgBooth').src;
     		this.bind('weibo',url,title,pic);
+            this.bind('wangyi',url,title,pic);
             this.bind('qweibo',url,title,pic);
             this.bind('qzone',url,title,pic);
             this.bind('pengyou',url,title,pic);
     	},
     	api:{
     		'weibo': 'http://service.weibo.com/share/share.php?url={url}&title={title}&pic={pic}&language=zh_cn',
+            'wangyi':'http://t.163.com/article/user/checkLogin.do?info={title}{url}&images={pic}&togImg=true',
 	        'qweibo': 'http://share.v.t.qq.com/index.php?c=share&a=index&appkey=801314304&url={url}&title={title}&pic={pic}',
 	        'qzone': 'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url={url}&title={title}&summary={title}&desc={title}&pics={pic}&otype=share',
 	        'pengyou': 'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url={url}&title={title}&summary={title}&pics={pic}&to=pengyou'
@@ -96,6 +98,7 @@
     	createPannel:function(){
     		var html = ['<div>分享至：</div><ul>'];
     		html.push('<li><a href="###" id="topke-share-weibo">新浪微博</a></li>');
+            html.push('<li><a href="###" id="topke-share-wangyi">网易微博</a></li>');
     		html.push('<li><a href="###" id="topke-share-qweibo">腾讯微博</a></li>');
     		html.push('<li><a href="###" id="topke-share-qzone">QQ空间</a></li>');
     		html.push('<li><a href="###" id="topke-share-pengyou">QQ朋友</a></li>');
