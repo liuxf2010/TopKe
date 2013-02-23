@@ -90,6 +90,7 @@
             href = this.replaceAll(href, '{pic}', encodeURIComponent(pic));
             btn.onclick = function(){
             	window.open(href, '_blank');
+				return false;
             };
     	},
     	getShareUrl:function(type){
@@ -112,15 +113,9 @@
     T('TopKe', {
     	init:function(){
     		var id = T.request.get('id');
-    		var doReal = this.checkTrack();
-    		if(id && doReal){
+    		if(id){
     			this.getTaobaokeItem(id);
     		}
-    	},
-    	checkTrack:function(){
-    		var ali_id = T.request.get('ali_trackid');
-    		var has_id = 'mm_11988958_0_0';
-    		return (!ali_id) ? true : ali_id.indexOf(has_id)<0;
     	},
         getHead:function(){
             var doc = document;
